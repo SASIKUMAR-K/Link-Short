@@ -1,0 +1,130 @@
+.logOutBut{
+    border: 2px solid #5b3d3d;
+    color: #F1E5D1;
+    background-color: #5b3d3d;
+    font-size: 15px;
+    padding: 5px;
+    border-radius: 5px;
+    font-weight: 500;
+    font-family: "Noto Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+    cursor: pointer;
+    position: absolute;
+    right:10px ;
+    top:10px;
+}
+.logOutBut:active{
+    background-color: #F1E5D1;
+    color: #5b3d3d;
+}
+.resumeFormMain{
+    background-color: #5b3d3d;
+    width: 500px;
+    margin: 50px auto;
+    color: #F1E5D1;
+    font-weight: 500;
+    font-family: "Noto Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+    padding: 30px;
+    border-radius: 30px;
+}
+.resumeFormMain > *{
+    display: block;
+    width: 100%;
+    margin: 10px 0px;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+}
+.resumeFormMain > label{
+    padding: 0px;
+}
+.resumeFormMain > button{
+    margin: 30px 0px 20px 0px;
+    border: 2px solid #F1E5D1;
+    color: #5b3d3d;
+    background-color: #F1E5D1;
+    font-family: "Noto Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+
+}
+.resumeFormMain input{
+    background-color: #F1E5D1;
+    color: #5b3d3d;
+}
+.resumeFormMain > button:active,.resume-link button:active{
+    color: #F1E5D1;
+    background-color:#5b3d3d;
+}
+.resume-link{
+    width: 500px;
+    padding: 30px;
+    border-radius: 30px;
+    background-color: #5b3d3d;
+    color:#F1E5D1;
+    margin: 20px auto;
+    font-family: "Noto Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+    font-size: 15px;
+    font-weight: 500;
+}
+.resume-link > *{
+    margin: 10px 0px;
+
+}
+.resume-link button{
+    border: 2px solid #F1E5D1;
+    color: #5b3d3d;
+    background-color: #F1E5D1;
+    font-family: "Noto Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+}
+.deleteBut{
+    margin-left: 10px;
+}
+.keyDesc{
+    margin-top: 5px !important;
+}
+.LinkTag{
+    text-decoration: none;
+}
+.auth-button{
+    margin-top: 50px;
+}
+.linkTextOp{
+    word-break: break-all;
+    word-wrap: break-word;
+}
+
+@media only screen and (max-width:600px){
+    .resumeFormMain,.resume-link{
+        width: 95%;
+    }
+    .auth-button{
+        width: 250px;
+        font-size: 20px;
+    }
+}

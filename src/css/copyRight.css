@@ -1,0 +1,23 @@
+.aboutMeContainer {
+    text-align: center;
+    letter-spacing: 2px;
+    width: 100%;
+    background-color:#5b3d3d;
+    color: #F1E5D1;
+    padding: 4px 0px;
+    font-size: 20px;
+    font-family: "Noto Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
+}
+
+.aboutMeContainer p {
+    display: inline;
+}
+
+.aboutMeContainer a {
+    font-weight: 1000;
+    color: #F1E5D1;
+    padding: 0px 10px;
+}
