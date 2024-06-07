@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "sasurl"
-  }
+  },
+  "targets": {
+    "sasurl": {
+      "hosting": {
+        "linkshort": [
+          "linkshort"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
