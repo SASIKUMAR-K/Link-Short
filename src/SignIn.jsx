@@ -28,7 +28,7 @@ const SignIn = () => {
 
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (user) => {
-			if (user) {
+			if (user && user.emailVerified) {
 				navigate('/'); // Redirect to the home page or admin page on successful authentication
 			}
 		});
@@ -47,16 +47,39 @@ const SignIn = () => {
 	};
 
 	const handleEmailPasswordSignIn = async () => {
+		if (!email || !password) {
+			alert('Please fill in all fields.');
+			return;
+		}
+
 		try {
 			await signInWithEmailAndPassword(auth, email, password);
+			const user = auth.currentUser;
+			if (user && !user.emailVerified) {
+				alert('Email not verified. Kindly see the mail to verify.');
+				await sendEmailVerification(user);
+				return;
+			}
+			alert('Login successful');
 			navigate('/'); // Redirect to the home page or admin page on successful authentication
 		} catch (error) {
-			alert('Failed to sign in. Please check your email and password.');
+			if (error.code === 'auth/user-not-found') {
+				alert('User not found.');
+			} else if (error.code === 'auth/wrong-password') {
+				alert('Incorrect password.');
+			} else {
+				alert('Failed to sign in. Please check your email and password.');
+			}
 			console.error('Error during sign-in:', error);
 		}
 	};
 
 	const handleSignUp = async () => {
+		if (!email || !password || !confirmPassword) {
+			alert('Please fill in all fields.');
+			return;
+		}
+
 		if (password !== confirmPassword) {
 			alert('Passwords do not match.');
 			return;
@@ -70,21 +93,20 @@ const SignIn = () => {
 		}
 
 		try {
-			const methods = await fetchSignInMethodsForEmail(auth, email);
-			if (methods.length > 0) {
-				alert('Email already in use. Please use a different email.');
-				return;
-			}
-
 			const userCredential = await createUserWithEmailAndPassword(
 				auth,
 				email,
 				password
 			);
 			await sendEmailVerification(userCredential.user);
-			alert('Sign up successful! Please check your email for verification.');
+			alert('Sign up successful! Verification email sent to your email ID.');
+			setIsSignUp(false); // Switch to sign-in form
 		} catch (error) {
-			alert('Failed to sign up. Please try again.');
+			if (error.code === 'auth/email-already-in-use') {
+				alert('Email already in use. Please use a different email or sign in.');
+				setIsSignUp(false); // Switch to sign-in form
+				return;
+			}
 			console.error('Error during sign-up:', error);
 		}
 	};

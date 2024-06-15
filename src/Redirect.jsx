@@ -8,6 +8,7 @@ import './css/redirect.css';
 import CopyRight from './CopyRight';
 import Navbar from './Navbar';
 import { Link } from 'react-router-dom';
+import downArrow from './img/downArrow.png';
 
 const Redirect = () => {
 	const { linkUrl } = useParams();
@@ -58,6 +59,10 @@ const Redirect = () => {
 			{linkItem ? (
 				<>
 					<Navbar />
+					<div className='downArrow'>
+						<p>Click Here</p>
+						<img src={downArrow} alt='Arrow' />
+					</div>
 					<div className='redirectLinkFou'>
 						<div className='redirectLink'>
 							<LinkAlone keyName={linkItem.key} link={linkItem.link} />

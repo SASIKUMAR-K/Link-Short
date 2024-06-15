@@ -118,6 +118,16 @@
     word-break: break-all;
     word-wrap: break-word;
 }
+.emailNotVer{
+    width: 100%;
+    height: auto;
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+}
+.emailNotVer p{
+    text-align: center !important;
+}
 
 @media only screen and (max-width:600px){
     .resumeFormMain,.resume-link{

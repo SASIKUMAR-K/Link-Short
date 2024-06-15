@@ -1,6 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { signOut, onAuthStateChanged } from 'firebase/auth';
+import {
+	signOut,
+	onAuthStateChanged,
+	sendEmailVerification,
+} from 'firebase/auth';
 import { auth, db } from './firebase';
 import {
 	addDoc,
@@ -15,6 +19,7 @@ import {
 import './css/admin.css';
 import Navbar from './Navbar';
 import Loading from './img/loading.gif';
+import CopyRight from './CopyRight';
 
 const Admin = () => {
 	const navigate = useNavigate();
@@ -28,19 +33,17 @@ const Admin = () => {
 	const [user, setUser] = useState(null);
 	const [isUserAdmin, setIsUserAdmin] = useState(false);
 	const [loading, setLoading] = useState(true);
+	const [emailVerified, setEmailVerified] = useState(false);
 
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, async (user) => {
 			if (user) {
 				setUser(user);
-				await fetchResumeLinks(user.email);
+				setEmailVerified(user.emailVerified);
+				if (user.emailVerified) {
+					await fetchResumeLinks(user.email);
+				}
 				setIsUserAdmin(user.email === import.meta.env.VITE_REACT_APP_EMAIL);
-				console.log(
-					user.email === import.meta.env.VITE_REACT_APP_EMAIL,
-					user.email,
-					import.meta.env.VITE_REACT_APP_EMAIL,
-					isUserAdmin
-				);
 			} else {
 				setUser(null);
 				setIsUserAdmin(false);
@@ -202,6 +205,16 @@ const Admin = () => {
 		fetchResumeLinks(user.email);
 	};
 
+	const handleSendVerificationEmail = async () => {
+		try {
+			await sendEmailVerification(user);
+			alert('Verification email sent.');
+		} catch (error) {
+			console.error('Error sending verification email:', error);
+			alert('Failed to send verification email.');
+		}
+	};
+
 	return (
 		<div>
 			<Navbar />
@@ -210,120 +223,170 @@ const Admin = () => {
 					<img src={Loading} alt='Loading...' />
 				</div>
 			) : user ? (
-				<>
-					<button className='logOutBut' onClick={handleLogout}>
-						Logout
-					</button>
-					<form
-						className='resumeFormMain'
-						onSubmit={(e) => e.preventDefault()}
-						ref={formRef}
-					>
-						<label>Key:</label>
-						<label className='keyDesc'>
-							viewlink.web.app/ <strong>key</strong>
-						</label>
-						<input
-							placeholder='Enter your key'
-							type='text'
-							value={keyValue}
-							onChange={(e) => setKeyValue(e.target.value)}
-						/>
-
-						<label>Link:</label>
-						<input
-							placeholder='Enter your Link'
-							type='text'
-							value={link}
-							onChange={(e) => setLink(e.target.value)}
-						/>
-
-						{editingId ? (
-							<button type='button' onClick={handleUpdate}>
-								Update
-							</button>
-						) : (
-							<button type='button' onClick={handleAddResumeLink}>
-								Add
-							</button>
-						)}
-					</form>
-
-					<form className='resumeFormMain' onSubmit={(e) => e.preventDefault()}>
-						<label>Search by</label>
-						<select
-							value={searchType}
-							onChange={(e) => setSearchType(e.target.value)}
+				emailVerified ? (
+					<>
+						<button className='logOutBut' onClick={handleLogout}>
+							Logout
+						</button>
+						<form
+							className='resumeFormMain'
+							onSubmit={(e) => e.preventDefault()}
+							ref={formRef}
 						>
-							<option value='key'>Key</option>
-							<option value='link'>Link</option>
-							{isUserAdmin && (
-								<>
-									<option value='emailId'>Email ID</option>
-									<option value='emailName'>Email Name</option>
-								</>
-							)}
-						</select>
-						<input
-							type='text'
-							placeholder='Type Here'
-							value={searchTerm}
-							onChange={(e) => setSearchTerm(e.target.value)}
-						/>
-						<button type='button' onClick={handleSearch}>
-							Search
-						</button>
-						<button type='button' onClick={handleClearSearch}>
-							Clear Search
-						</button>
-					</form>
+							<label>Key:</label>
+							<label className='keyDesc'>
+								viewlink.web.app/ <strong>key</strong>
+							</label>
+							<input
+								placeholder='Enter your key'
+								type='text'
+								value={keyValue}
+								onChange={(e) => setKeyValue(e.target.value)}
+							/>
 
-					<div className='resume-links-container'>
-						{resumeLinks.map((link) => (
-							<div key={link.id} className='resume-link'>
-								<div>
-									<strong>Key:</strong> {link.key}
-								</div>
-								<div className='linkTextOp'>
-									<strong>Link:</strong> {link.link}
-								</div>
+							<label>Link:</label>
+							<input
+								placeholder='Enter your Link'
+								type='text'
+								value={link}
+								onChange={(e) => setLink(e.target.value)}
+							/>
+
+							{editingId ? (
+								<button type='button' onClick={handleUpdate}>
+									Update
+								</button>
+							) : (
+								<button type='button' onClick={handleAddResumeLink}>
+									Add
+								</button>
+							)}
+						</form>
+
+						<form
+							className='resumeFormMain'
+							onSubmit={(e) => e.preventDefault()}
+						>
+							<label>Search by</label>
+							<select
+								value={searchType}
+								onChange={(e) => setSearchType(e.target.value)}
+							>
+								<option value='key'>Key</option>
+								<option value='link'>Link</option>
 								{isUserAdmin && (
 									<>
-										<div>
-											<strong>Email ID:</strong> {link.userEmail}
-										</div>
-										<div>
-											<strong>Email Name:</strong> {link.userEmailName}
-										</div>
+										<option value='emailId'>Email ID</option>
+										<option value='emailName'>Email Name</option>
 									</>
 								)}
-								<div className='actions'>
-									<button
-										onClick={() => handleEdit(link.id, link.key, link.link)}
-									>
-										Edit
-									</button>
-									<button
-										className='deleteBut'
-										onClick={() => handleDelete(link.id)}
-									>
-										Delete
-									</button>
+							</select>
+							<input
+								type='text'
+								placeholder='Type Here'
+								value={searchTerm}
+								onChange={(e) => setSearchTerm(e.target.value)}
+							/>
+							<button type='button' onClick={handleSearch}>
+								Search
+							</button>
+							<button type='button' onClick={handleClearSearch}>
+								Clear Search
+							</button>
+						</form>
+
+						<div className='resume-links-container'>
+							{resumeLinks.map((link) => (
+								<div key={link.id} className='resume-link'>
+									<div>
+										<strong>Key:</strong> {link.key}
+									</div>
+									<div className='linkTextOp'>
+										<strong>Link:</strong> {link.link}
+									</div>
+									{isUserAdmin && (
+										<>
+											<div>
+												<strong>Email ID:</strong> {link.userEmail}
+											</div>
+											<div>
+												<strong>Email Name:</strong> {link.userEmailName}
+											</div>
+										</>
+									)}
+									<div className='actions'>
+										<button
+											onClick={() => handleEdit(link.id, link.key, link.link)}
+										>
+											Edit
+										</button>
+										<button
+											className='deleteBut'
+											onClick={() => handleDelete(link.id)}
+										>
+											Delete
+										</button>
+									</div>
 								</div>
-							</div>
-						))}
-					</div>
-				</>
-			) : (
-				<div className='auth-container'>
-					<Link to='/sign' className='LinkTag'>
+							))}
+						</div>
+					</>
+				) : (
+					<>
+						<button className='logOutBut' onClick={handleLogout}>
+							Logout
+						</button>
+						<div className='linkNotFoundCon emailNotVer'>
+							<p className='linkNotFound'>Email Not Verified</p>
+						</div>
 						<div className='signInCon'>
-							<button className='auth-button signInWithGoogle'>
-								Create Account or Sign Up
+							<button
+								className='auth-button signInWithGoogle'
+								onClick={handleSendVerificationEmail}
+							>
+								Send Verification Email
 							</button>
 						</div>
-					</Link>
-				</div>
+						<div className='copyDown'>
+							<div className='aboutMeContainer'>
+								Design And Coded By
+								<p>
+									<a
+										href='https://www.linkedin.com/in/mr-sasikumar-k/'
+										target='_blank'
+									>
+										SASIKUMAR K
+									</a>
+								</p>
+							</div>
+						</div>
+					</>
+				)
+			) : (
+				<>
+					<div className='auth-container'>
+						<Link to='/sign' className='LinkTag'>
+							<div className='signInCon'>
+								<button className='auth-button signInWithGoogle'>
+									Create Account or Sign Up
+								</button>
+							</div>
+						</Link>
+					</div>
+					<div className='copyDown'>
+						<div className='aboutMeContainer'>
+							Design And Coded By
+							<p>
+								<a
+									href='https://www.linkedin.com/in/mr-sasikumar-k/'
+									target='_blank'
+								>
+									SASIKUMAR K
+								</a>
+							</p>
+						</div>
+					</div>
+				</>
 			)}
 		</div>
 	);

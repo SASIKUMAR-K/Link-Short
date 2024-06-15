@@ -42,7 +42,7 @@ box-sizing: border-box;}
     align-items: center;
 }
 .redirectLinkFou{
-    margin-top:100px ;
+    margin-top:10px ;
 }
 .sasiHeading{
     color: #5b3d3d;
@@ -64,6 +64,23 @@ box-sizing: border-box;}
     position: fixed;
     bottom: 0;
     width: 100%;
+}
+.downArrow{
+    width: 200px;
+    margin: 30px auto;
+    color: #5b3d3d;
+    font-weight: 700;
+    font-size: 25px;
+    font-family: "Noto Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+    text-align: center;
+}
+.downArrow img{
+    width: 50%;
+    filter: saturate(60%);
 }
 @media only screen and (max-width:850px){
     .sasiHeading{
